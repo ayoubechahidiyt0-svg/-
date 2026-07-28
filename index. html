@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ 𝛩𝑺𝐾𝐴-𝐵𝛩𝑇 - البوت الملكي الرسمي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #050608;
+            --card: #0d1117;
+            --cyan: #00f2fe;
+            --blue: #4facfe;
+            --purple: #7f00ff;
+            --text: #a9b2c3;
+            --white: #ffffff;
+            --glow: 0 0 15px rgba(0,242,254,0.4);
+        }
+        *{box-sizing:border-box;margin:0;padding:0;font-family:'Tajawal',sans-serif;scroll-behavior:smooth}
+        body{background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
+
+        #particles-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+        .grid-bg{position:fixed;top:0;left:0;width:100%;height:100%;
+            background-image:linear-gradient(rgba(0,242,254,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,242,254,.02) 1px,transparent 1px);
+            background-size:50px 50px;z-index:-2}
+
+        /* NAV */
+        nav{position:fixed;top:0;left:0;width:100%;background:rgba(5,6,8,.92);backdrop-filter:blur(18px);z-index:1000;
+            border-bottom:2px solid;border-image:linear-gradient(90deg,transparent,var(--cyan),var(--purple),transparent) 1}
+        .nav-container{max-width:1200px;margin:0 auto;padding:13px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+        .logo{font-size:22px;font-weight:900;color:var(--white);text-decoration:none;display:flex;align-items:center;gap:8px}
+        .logo span{background:linear-gradient(45deg,var(--cyan),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .nav-links{display:flex;list-style:none;gap:6px;align-items:center}
+        .nav-links a{color:var(--text);text-decoration:none;font-weight:600;font-size:13.5px;padding:8px 13px;border-radius:8px;
+            transition:.3s;display:flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid transparent}
+        .nav-links a:hover,.nav-links a.active{color:var(--white);background:rgba(0,242,254,.07);border-color:rgba(0,242,254,.15)}
+        .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;background:rgba(255,255,255,.04);
+            border:1px solid rgba(0,242,254,.2);border-radius:8px}
+        .hamburger span{width:22px;height:2px;background:var(--cyan);border-radius:2px;transition:.3s}
+        .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+        .hamburger.open span:nth-child(2){opacity:0}
+        .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+        .mobile-nav{display:none;position:fixed;top:65px;left:0;width:100%;background:rgba(5,6,8,.98);
+            backdrop-filter:blur(20px);z-index:999;border-bottom:1px solid rgba(0,242,254,.15);padding:16px;
+            flex-direction:column;gap:6px}
+        .mobile-nav.open{display:flex}
+        .mobile-nav a,.mobile-nav button{display:flex;align-items:center;gap:10px;color:var(--text);text-decoration:none;
+            font-size:15px;padding:12px 16px;border-radius:10px;border:1px solid transparent;transition:.3s;
+            background:none;cursor:pointer;width:100%;font-family:'Tajawal',sans-serif}
+        .mobile-nav a:hover,.mobile-nav button:hover{color:var(--white);background:rgba(0,242,254,.06);border-color:rgba(0,242,254,.15)}
+
+        /* MODAL */
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:3000;
+            display:none;align-items:center;justify-content:center}
+        .modal-overlay.show{display:flex;animation:fadeIn .25s ease}
+        .modal-box{background:#0d1117;border:1px solid rgba(0,242,254,.3);border-radius:20px;padding:40px 36px;
+            width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.6),var(--glow);text-align:center;position:relative}
+        .modal-box h2{color:var(--white);font-size:22px;margin-bottom:8px}
+        .modal-box p{font-size:14px;margin-bottom:28px}
+        .modal-icon{font-size:48px;margin-bottom:16px;display:block}
+        .modal-input-wrap{position:relative;margin-bottom:20px}
+        .modal-input{width:100%;padding:13px 48px 13px 16px;background:#141b24;border:1px solid rgba(0,242,254,.2);
+            border-radius:10px;color:var(--white);font-size:15px;font-family:'Tajawal',sans-serif;transition:.3s;outline:none}
+        .modal-input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,242,254,.08)}
+        .modal-eye{position:absolute;left:14px;top:50%;transform:translateY(-50%);background:none;border:none;
+            color:var(--text);cursor:pointer;font-size:16px;transition:.2s}
+        .modal-eye:hover{color:var(--cyan)}
+        .modal-btns{display:flex;gap:12px}
+        .modal-close-btn{flex:1;padding:12px;border-radius:10px;background:rgba(255,255,255,.04);
+            border:1px solid rgba(255,255,255,.1);color:var(--text);cursor:pointer;font-family:'Tajawal',sans-serif;font-size:14px;transition:.3s}
+        .modal-close-btn:hover{background:rgba(255,255,255,.08);color:var(--white)}
+        .modal-submit-btn{flex:2;padding:12px;border-radius:10px;background:linear-gradient(45deg,var(--cyan),var(--blue));
+            border:none;color:#040506;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:700;transition:.3s}
+        .modal-submit-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,242,254,.3)}
+        .modal-error{color:#ff4d6d;font-size:13px;margin-top:-12px;margin-bottom:14px;display:none}
+
+        /* HERO */
+        .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+            padding:120px 20px 60px;position:relative}
+        .hero-video-wrapper{width:100%;max-width:900px;border-radius:20px;overflow:hidden;border:2px solid rgba(0,242,254,.2);
+            box-shadow:0 0 60px rgba(0,242,254,.12);margin-bottom:60px;position:relative;background:#000}
+        .hero-video-placeholder{width:100%;height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+            background:linear-gradient(135deg,#0d1117,#0a1628);color:var(--text);gap:16px}
+        .hero-video-placeholder i{font-size:60px;color:var(--cyan);opacity:.4}
+        .video-label{position:absolute;top:16px;right:16px;background:rgba(0,0,0,.7);color:var(--cyan);
+            font-size:12px;padding:4px 12px;border-radius:20px;border:1px solid rgba(0,242,254,.2)}
+        .step-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(0,242,254,.08);color:var(--cyan);
+            font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid rgba(0,242,254,.15);margin-top:8px}
+        .hero-main{display:flex;align-items:center;justify-content:space-between;gap:50px;width:100%;max-width:1200px}
+        .hero-content{flex:1}
+        .hero-image-wrapper{flex:1;display:flex;justify-content:center;align-items:center;animation:float 6s ease-in-out infinite}
+        .hero-image-container{width:300px;height:300px;border-radius:50%;padding:7px;
+            background:linear-gradient(45deg,var(--cyan),var(--blue),var(--purple),var(--cyan));
+            background-size:300% 300%;animation:glowBreath 4s infinite alternate,gradientShift 8s ease infinite}
+        .hero-img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:5px solid #0d1117}
+
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+        @keyframes glowBreath{0%{box-shadow:0 0 20px rgba(0,242,254,.4)}100%{box-shadow:0 0 50px rgba(127,0,255,.7),0 0 80px rgba(0,242,254,.5)}}
+        @keyframes gradientShift{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
+        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+        @keyframes slideDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+        .badge{background:rgba(0,242,254,.08);color:var(--cyan);padding:9px 18px;border-radius:50px;font-size:13px;
+            font-weight:700;display:inline-flex;align-items:center;gap:7px;margin-bottom:22px;border:1px solid rgba(0,242,254,.2)}
+        .hero-title{font-size:44px;font-weight:900;color:var(--white);margin-bottom:18px;line-height:1.2}
+        .hero-title span{background:linear-gradient(45deg,var(--cyan),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .hero-desc{font-size:17px;margin-bottom:36px}
+        .btn-group{display:flex;gap:14px;flex-wrap:wrap}
+        .btn{padding:13px 30px;border-radius:10px;font-weight:700;text-decoration:none;transition:.3s;
+            display:inline-flex;align-items:center;gap:9px;font-size:15px;cursor:pointer;border:none;font-family:'Tajawal',sans-serif}
+        .btn-primary{background:linear-gradient(45deg,var(--cyan),var(--blue));color:#040506;box-shadow:0 4px 20px rgba(0,242,254,.3)}
+        .btn-primary:hover{transform:translateY(-4px);box-shadow:0 8px 25px rgba(0,242,254,.5)}
+        .btn-secondary{background:rgba(255,255,255,.03);color:var(--white);border:1px solid rgba(255,255,255,.1)!important}
+        .btn-secondary:hover{border-color:var(--cyan)!important;transform:translateY(-4px)}
+
+        /* SECTIONS */
+        section{padding:80px 20px;max-width:1200px;margin:0 auto}
+        .section-header{text-align:center;margin-bottom:50px}
+        .section-badge{color:var(--cyan);font-size:12px;font-weight:700;background:rgba(0,242,254,.05);
+            padding:5px 14px;border-radius:30px;border:1px solid rgba(0,242,254,.1)}
+        .section-title{font-size:34px;color:var(--white);margin-top:10px}
+        .section-title span{background:linear-gradient(45deg,var(--cyan),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+        /* INSTALL STEPS */
+        .install-steps{display:flex;flex-direction:column;gap:20px;max-width:750px;margin:0 auto}
+        .step-card{background:var(--card);border:1px solid rgba(255,255,255,.05);border-radius:16px;padding:28px 32px;
+            display:flex;align-items:flex-start;gap:24px;position:relative;overflow:hidden;transition:.3s}
+        .step-card::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%;
+            background:linear-gradient(180deg,var(--cyan),var(--purple))}
+        .step-card:hover{transform:translateX(-6px);border-color:rgba(0,242,254,.2);box-shadow:0 8px 30px rgba(0,242,254,.07)}
+        .step-num{width:50px;height:50px;min-width:50px;border-radius:50%;background:linear-gradient(45deg,var(--cyan),var(--blue));
+            display:flex;align-items:center;justify-content:center;color:#040506;font-size:20px;font-weight:900}
+        .step-content h3{color:var(--white);font-size:17px;margin-bottom:8px}
+        .step-content p{font-size:14px;line-height:1.7}
+        .step-content .step-action{margin-top:16px}
+        .connector{width:2px;height:24px;background:linear-gradient(var(--cyan),var(--purple));margin-right:41px}
+
+        /* DEPLOY */
+        .deploy-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px;margin-top:30px}
+        .deploy-card{background:var(--card);border:1px solid rgba(255,255,255,.05);border-radius:16px;padding:28px;
+            transition:.3s;position:relative;overflow:hidden}
+        .deploy-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;
+            background:linear-gradient(90deg,var(--cyan),var(--blue))}
+        .deploy-card:hover{transform:translateY(-7px);border-color:var(--cyan);box-shadow:0 10px 30px rgba(0,242,254,.1)}
+        .deploy-card h3{color:var(--white);margin-bottom:12px;display:flex;align-items:center;gap:8px;font-size:16px}
+        .deploy-card p{font-size:13.5px;margin-bottom:22px;min-height:55px}
+
+        /* FEATURES */
+        .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:22px}
+        .feature-card{background:var(--card);padding:38px 28px;border-radius:16px;transition:.3s;
+            border:1px solid rgba(255,255,255,.02);text-align:center}
+        .feature-card:hover{transform:translateY(-9px);border-color:rgba(0,242,254,.2);box-shadow:0 15px 35px rgba(0,242,254,.07)}
+        .feature-icon-wrapper{width:68px;height:68px;background:rgba(0,242,254,.05);border-radius:50%;
+            display:flex;align-items:center;justify-content:center;margin:0 auto 18px;border:1px solid rgba(0,242,254,.1)}
+        .feature-icon{font-size:27px;background:linear-gradient(45deg,var(--cyan),var(--blue));
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+        /* DEVELOPER */
+        .dev-card{background:var(--card);border-radius:20px;max-width:520px;margin:0 auto;padding:46px 28px;
+            text-align:center;border:1px solid rgba(0,242,254,.08)}
+        .dev-avatar{width:110px;height:110px;border-radius:50%;background:linear-gradient(45deg,var(--cyan),var(--blue));
+            display:flex;align-items:center;justify-content:center;font-size:46px;color:#040506;margin:0 auto 22px}
+
+        /* OWNER PANEL */
+        .owner-panel-wrapper{max-width:900px;margin:40px auto;display:none}
+        .owner-panel-wrapper.active{display:block;animation:slideUp .4s ease}
+        .owner-panel{background:#090d14;border:2px solid rgba(0,242,254,.35);border-radius:24px;overflow:hidden;
+            box-shadow:0 20px 60px rgba(0,0,0,.5),var(--glow)}
+        .owner-panel-header{background:linear-gradient(90deg,rgba(0,242,254,.08),rgba(127,0,255,.08));
+            padding:28px 36px;border-bottom:1px solid rgba(0,242,254,.15);display:flex;align-items:center;justify-content:space-between}
+        .owner-panel-header h2{color:var(--white);font-size:20px;display:flex;align-items:center;gap:10px}
+        .panel-close{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--text);
+            width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+            transition:.2s;font-size:16px}
+        .panel-close:hover{background:rgba(255,77,109,.15);border-color:rgba(255,77,109,.3);color:#ff4d6d}
+        .panel-tabs{display:flex;border-bottom:1px solid rgba(255,255,255,.06)}
+        .panel-tab{flex:1;padding:16px 20px;background:none;border:none;color:var(--text);cursor:pointer;font-family:'Tajawal',sans-serif;
+            font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;transition:.25s;
+            border-bottom:2px solid transparent;margin-bottom:-1px}
+        .panel-tab:hover{color:var(--white);background:rgba(0,242,254,.03)}
+        .panel-tab.active{color:var(--cyan);border-bottom-color:var(--cyan);background:rgba(0,242,254,.04)}
+        .tab-content{display:none;padding:32px 36px;animation:fadeIn .3s ease}
+        .tab-content.active{display:block}
+        .field-group{margin-bottom:22px}
+        .field-group label{display:block;color:var(--white);font-weight:700;font-size:14px;margin-bottom:8px}
+        .field-group label i{color:var(--cyan);margin-left:6px}
+        .owner-input{width:100%;padding:12px 16px;background:#141b24;border:1px solid rgba(0,242,254,.15);
+            border-radius:10px;color:var(--white);font-size:14px;font-family:'Tajawal',sans-serif;transition:.3s;outline:none}
+        .owner-input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,242,254,.08)}
+        textarea.owner-input{resize:vertical;min-height:80px}
+        .owner-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+        .owner-grid-2>.field-group{margin-bottom:0}
+        .save-btn{width:100%;padding:14px;border-radius:12px;background:linear-gradient(45deg,var(--cyan),var(--blue));
+            border:none;color:#040506;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:700;cursor:pointer;
+            display:flex;align-items:center;justify-content:center;gap:10px;margin-top:28px;transition:.3s}
+        .save-btn:hover{transform:translateY(-3px);box-shadow:0 8px 25px rgba(0,242,254,.35)}
+        .security-info{background:rgba(0,242,254,.04);border:1px solid rgba(0,242,254,.12);border-radius:12px;
+            padding:18px 20px;margin-bottom:24px;display:flex;gap:12px;align-items:flex-start}
+        .security-info i{color:var(--cyan);font-size:18px;margin-top:2px}
+        .security-info p{font-size:13.5px;line-height:1.6}
+        .password-input-wrap{position:relative}
+        .password-input-wrap .owner-input{padding-left:44px}
+        .toggle-eye{position:absolute;left:14px;top:50%;transform:translateY(-50%);background:none;border:none;
+            color:var(--text);cursor:pointer;font-size:15px;transition:.2s}
+        .toggle-eye:hover{color:var(--cyan)}
+
+        /* AI CHAT */
+        .ai-chat-trigger{position:fixed;bottom:26px;right:26px;width:58px;height:58px;border-radius:50%;
+            background:linear-gradient(45deg,var(--cyan),var(--blue));box-shadow:0 0 20px rgba(0,242,254,.4);
+            display:flex;align-items:center;justify-content:center;color:#000;font-size:23px;cursor:pointer;z-index:999;transition:.3s}
+        .ai-chat-trigger:hover{transform:scale(1.1) rotate(15deg)}
+        .ai-chat-widget{position:fixed;bottom:96px;right:26px;width:340px;height:420px;
+            background:rgba(13,17,23,.96);border:1px solid rgba(0,242,254,.25);border-radius:18px;
+            box-shadow:0 12px 40px rgba(0,0,0,.6),var(--glow);z-index:998;display:none;flex-direction:column;overflow:hidden;backdrop-filter:blur(12px)}
+        .ai-chat-header{background:linear-gradient(45deg,var(--cyan),var(--blue));padding:14px 16px;color:#000;font-weight:700;
+            display:flex;justify-content:space-between;align-items:center;font-size:14px}
+        .ai-chat-messages{flex:1;padding:14px;overflow-y:auto;display:flex;flex-direction:column;gap:9px;font-size:13px}
+        .message{padding:9px 13px;border-radius:12px;max-width:82%;line-height:1.5}
+        .message.bot{background:rgba(255,255,255,.05);align-self:flex-start;color:var(--white)}
+        .message.user{background:var(--cyan);color:#000;align-self:flex-end}
+        .ai-chat-input-area{display:flex;border-top:1px solid rgba(255,255,255,.05);padding:10px;background:rgba(5,6,8,.9)}
+        .ai-chat-input{flex:1;background:transparent;border:none;color:#fff;padding:5px 10px;outline:none;font-family:'Tajawal',sans-serif}
+        .ai-chat-send{background:none;border:none;color:var(--cyan);cursor:pointer;font-size:16px;padding:0 10px}
+
+        /* MUSIC */
+        .music-widget{position:fixed;bottom:26px;left:26px;background:rgba(13,17,23,.9);
+            border:1px solid rgba(0,242,254,.18);padding:11px 18px;border-radius:50px;
+            display:flex;align-items:center;gap:13px;z-index:997;box-shadow:0 8px 32px rgba(0,0,0,.5);backdrop-filter:blur(10px)}
+        .music-btn{background:none;border:none;color:var(--cyan);cursor:pointer;font-size:15px}
+        .music-info{display:flex;flex-direction:column;font-size:11px}
+        .music-title{color:var(--white);font-weight:700}
+
+        footer{background:#030405;padding:50px 20px;text-align:center;border-top:1px solid rgba(255,255,255,.03);margin-top:60px}
+
+        @media(max-width:900px){
+            .hero-main{flex-direction:column;text-align:center}
+            .btn-group{justify-content:center}
+            .hero-image-container{width:240px;height:240px}
+            .nav-links{display:none}
+            .hamburger{display:flex}
+            .owner-grid-2{grid-template-columns:1fr}
+        }
+        @media(max-width:600px){
+            .hero-title{font-size:30px}
+            .tab-content{padding:24px 20px}
+            .owner-panel-header{padding:20px}
+            .panel-tab{font-size:12px;padding:12px 8px}
+        }
+    </style>
+</head>
+<body>
+<canvas id="particles-canvas"></canvas>
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav>
+    <div class="nav-container">
+        <a href="#home" class="logo" id="main-logo"><span>⚡ 𝛩𝑺𝐾𝐴-𝐵𝛩𝑇</span></a>
+        <ul class="nav-links">
+            <li><a href="#home"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
+            <li><a href="#install"><i class="fa-solid fa-terminal"></i> التنصيب</a></li>
+            <li><a href="#deploy"><i class="fa-solid fa-cloud-arrow-up"></i> التشغيل</a></li>
+            <li><a href="#features"><i class="fa-solid fa-bolt"></i> المميزات</a></li>
+            <li><a href="#developer"><i class="fa-solid fa-user-ninja"></i> المطور</a></li>
+            <li><a href="#" onclick="openOwnerModal(event)"><i class="fa-solid fa-shield-halved"></i> لوحة التحكم</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger" onclick="toggleMobileNav()">
+            <span></span><span></span><span></span>
+        </div>
+    </div>
+</nav>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav" id="mobile-nav">
+    <a href="#home" onclick="closeMobileNav()"><i class="fa-solid fa-house"></i> الرئيسية</a>
+    <a href="#install" onclick="closeMobileNav()"><i class="fa-solid fa-terminal"></i> طريقة التنصيب</a>
+    <a href="#deploy" onclick="closeMobileNav()"><i class="fa-solid fa-cloud-arrow-up"></i> التشغيل السريع</a>
+    <a href="#features" onclick="closeMobileNav()"><i class="fa-solid fa-bolt"></i> المميزات</a>
+    <a href="#developer" onclick="closeMobileNav()"><i class="fa-solid fa-user-ninja"></i> المطور</a>
+    <button onclick="openOwnerModal(event);closeMobileNav()"><i class="fa-solid fa-shield-halved"></i> لوحة التحكم</button>
+</div>
+
+<!-- PASSWORD MODAL -->
+<div class="modal-overlay" id="owner-modal">
+    <div class="modal-box">
+        <span class="modal-icon">🔐</span>
+        <h2>منطقة محمية</h2>
+        <p>أدخل كلمة مرور المالك للوصول إلى لوحة التحكم الشاملة</p>
+        <div class="modal-input-wrap">
+            <input type="password" class="modal-input" id="modal-pass-input" placeholder="كلمة المرور..." onkeydown="if(event.key==='Enter')verifyOwner()">
+            <button class="modal-eye" onclick="toggleModalEye()" id="modal-eye-btn"><i class="fa-solid fa-eye"></i></button>
+        </div>
+        <div class="modal-error" id="modal-error">❌ كلمة المرور غير صحيحة، حاول مجدداً</div>
+        <div class="modal-btns">
+            <button class="modal-close-btn" onclick="closeOwnerModal()">إلغاء</button>
+            <button class="modal-submit-btn" onclick="verifyOwner()"><i class="fa-solid fa-unlock-keyhole"></i> دخول</button>
+        </div>
+    </div>
+</div>
+
+<!-- HERO -->
+<header class="hero" id="home">
+    <div class="hero-video-wrapper" data-aos="fade-up" data-aos-duration="900">
+        <span class="video-label"><i class="fa-solid fa-circle-dot" style="color:#ff4d6d"></i> معاينة البوت</span>
+        <div class="hero-video-placeholder" id="video-placeholder">
+            <i class="fa-solid fa-play-circle"></i>
+            <p style="font-size:15px">فيديو تعريفي للبوت — سيُضاف من لوحة التحكم</p>
+            <span class="step-badge"><i class="fa-solid fa-gear"></i> اذهب للوحة التحكم &gt; إعدادات عامة &gt; رابط الفيديو</span>
+        </div>
+        <video id="hero-video" autoplay muted loop playsinline style="display:none"></video>
+    </div>
+    <div class="hero-main">
+        <div class="hero-content" data-aos="fade-left" data-aos-duration="1000">
+            <div class="badge"><i class="fa-solid fa-crown"></i> البوت الملكي الرسمي v1.8.2</div>
+            <h1 class="hero-title">أقوى وأسرع بوت واتساب عربي <span id="bot-title">𝛩𝑺𝐾𝐴-𝐵𝛩𝑇</span> ⚡</h1>
+            <p class="hero-desc" id="bot-desc">يعمل بتقنيات فائقة مع واجهة تفاعلية ذكية وسرعة استجابة خارقة لإدارة مجموعاتك وحمايتها من التخريب والسبام!</p>
+            <div class="btn-group">
+                <a href="https://github.com" target="_blank" class="btn btn-primary" id="btn-github-link"><i class="fa-brands fa-github"></i> كود المصدر</a>
+                <a href="https://whatsapp.com/channel/0029VaCSanOAInPhj2gY3U2s" target="_blank" class="btn btn-secondary" id="btn-wa-link"><i class="fa-brands fa-whatsapp"></i> القناة الرسمية</a>
+            </div>
+        </div>
+        <div class="hero-image-wrapper" data-aos="fade-right" data-aos-duration="1000">
+            <div class="hero-image-container">
+                <img src="https://files.catbox.moe/gfwv27.jpg" alt="OSKA-BOT" class="hero-img" id="hero-image">
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- INSTALL STEPS -->
+<section id="install">
+    <div class="section-header" data-aos="fade-up">
+        <span class="section-badge">دليل التنصيب</span>
+        <h2 class="section-title">كيفية تنصيب <span>البوت خطوة بخطوة</span> 🛠️</h2>
+    </div>
+    <div class="install-steps">
+        <div class="step-card" data-aos="fade-up" data-aos-delay="50">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <h3><i class="fa-solid fa-code-branch" style="color:var(--cyan)"></i> Fork الكود من GitHub</h3>
+                <p>اذهب إلى مستودع البوت على GitHub واضغط على Fork لنسخ الكود إلى حسابك الشخصي، ثم تأكد من أن المستودع مرئي (Public).</p>
+                <div class="step-action">
+                    <a href="https://github.com" target="_blank" class="btn btn-primary" id="install-github-link" style="padding:9px 20px;font-size:13px">
+                        <i class="fa-brands fa-github"></i> الذهاب إلى GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="connector"></div>
+        <div class="step-card" data-aos="fade-up" data-aos-delay="100">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <h3><i class="fa-solid fa-key" style="color:var(--cyan)"></i> احصل على كود الجلسة (Session ID)</h3>
+                <p>اضغط على الزر أدناه للذهاب إلى سيرفر توليد الجلسة، أدخل رقم الواتساب الخاص بالبوت وامسح الـ QR Code أو أدخل الرقم مباشرة، ثم انسخ الكود الناتج.</p>
+                <div class="step-action">
+                    <a href="https://whatsapp.com/channel/0029VaCSanOAInPhj2gY3U2s" target="_blank" class="btn btn-primary" id="session-btn-link" style="padding:9px 20px;font-size:13px">
+                        <i class="fa-solid fa-qrcode"></i> احصل على Session ID
+                    </a>
+                </div>
+                <span class="step-badge"><i class="fa-solid fa-triangle-exclamation"></i> لا تشارك هذا الكود مع أحد</span>
+            </div>
+        </div>
+        <div class="connector"></div>
+        <div class="step-card" data-aos="fade-up" data-aos-delay="150">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <h3><i class="fa-solid fa-cloud-arrow-up" style="color:var(--cyan)"></i> ارفع البوت على السيرفر</h3>
+                <p>اذهب إلى Koyeb أو Heroku، أنشئ حساباً مجانياً وابدأ مشروعاً جديداً من GitHub، ثم أضف متغيرات البيئة وضع فيها Session ID المنسوخ.</p>
+                <div class="step-action">
+                    <a href="https://whatsapp.com/channel/0029VaCSanOAInPhj2gY3U2s" target="_blank" class="btn btn-primary" id="deploy-btn-link" style="padding:9px 20px;font-size:13px">
+                        <i class="fa-solid fa-server"></i> رفع على Koyeb
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="connector"></div>
+        <div class="step-card" data-aos="fade-up" data-aos-delay="200">
+            <div class="step-num">4</div>
+            <div class="step-content">
+                <h3><i class="fa-brands fa-whatsapp" style="color:var(--cyan)"></i> شغّل ووصّل مع واتساب</h3>
+                <p>بعد النشر، سيظهر QR Code في سجلات السيرفر — امسحه بهاتف البوت. بعد ربط الاتصال بنجاح، البوت يكون جاهزاً ومشتغلاً 24/7!</p>
+                <span class="step-badge"><i class="fa-solid fa-circle-check"></i> البوت يعمل الآن بشكل كامل</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- DEPLOY QUICK -->
+<section id="deploy">
+    <div class="section-header" data-aos="fade-up">
+        <span class="section-badge">تشغيل فوري</span>
+        <h2 class="section-title">التنصيب <span>السريع</span> 🚀</h2>
+    </div>
+    <div class="deploy-grid">
+        <div class="deploy-card" data-aos="fade-up" data-aos-delay="80">
+            <h3><i class="fa-solid fa-qrcode"></i> استخراج الجلسة</h3>
+            <p>احصل على Session ID لربط رقم الواتساب بالسيرفر وتفعيل اتصال البوت.</p>
+            <a href="https://whatsapp.com/channel/0029VaCSanOAInPhj2gY3U2s" target="_blank" class="btn btn-primary" id="session-btn-link2" style="width:100%;justify-content:center">
+                <i class="fa-solid fa-key"></i> احصل على الجلسة
+            </a>
+        </div>
+        <div class="deploy-card" data-aos="fade-up" data-aos-delay="160">
+            <h3><i class="fa-solid fa-cloud-arrow-up"></i> نشر فوري على Koyeb</h3>
+            <p>ارفع البوت بنقرة واحدة على Koyeb واستمتع بتشغيل مجاني ومستقر.</p>
+            <a href="https://whatsapp.com/channel/0029VaCSanOAInPhj2gY3U2s" target="_blank" class="btn btn-secondary" id="deploy-btn-link2" style="width:100%;justify-content:center;border:1px solid rgba(0,242,254,.3)!important">
+                <i class="fa-solid fa-server"></i> Deploy على Koyeb
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+    <div class="section-header" data-aos="fade-up">
+        <span class="section-badge">مميزات لا غنى عنها</span>
+        <h2 class="section-title">المميزات <span>الخارقة</span> ⚡</h2>
+    </div>
+    <div class="features-grid">
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="80">
+            <div class="feature-icon-wrapper"><i class="fa-solid fa-bolt feature-icon"></i></div>
+            <h3>سرعة خارقة ⚡</h3>
+            <p>استجابة فورية مع تحسينات الأداء لضمان تجربة استخدام سلسة ومستقرة بدون أي تأخير.</p>
+        </div>
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="160">
+            <div class="feature-icon-wrapper"><i class="fa-solid fa-shield-halved feature-icon"></i></div>
+            <h3>حماية ملكية 👑</h3>
+            <p>نظام أمان متقدم يحمي مجموعتك من السبام والتخريب مع أدوات إدارة ذكية ومتطورة.</p>
+        </div>
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="240">
+            <div class="feature-icon-wrapper"><i class="fa-solid fa-wand-magic-sparkles feature-icon"></i></div>
+            <h3>أدوات AI ذكية 🤖</h3>
+            <p>تكامل ذكي مع أقوى نماذج الذكاء الاصطناعي لتوليد النصوص والصور الفنية فوراً.</p>
+        </div>
+    </div>
+</section>
+
+<!-- DEVELOPER -->
+<section id="developer">
+    <div class="section-header" data-aos="fade-up">
+        <span class="section-badge">خلف الكواليس</span>
+        <h2 class="section-title">المطور <span>الرئيسي</span> 👑</h2>
+    </div>
+    <div class="dev-card" data-aos="flip-left" data-aos-duration="900">
+        <div class="dev-avatar"><i class="fa-solid fa-user-ninja"></i></div>
+        <h3 style="color:var(--white);font-size:22px;margin-bottom:8px">𝐴𝑌𝑂𝑈𝐵</h3>
+        <div style="color:var(--cyan);font-weight:700;margin-bottom:14px">مطور ويب ومبرمج بوتات ذكية ⚡</div>
+        <p>أعمل على تطوير الأنظمة البرمجية وبناء واجهات مخصصة عصرية تلبي احتياجات المستخدم وتواكب التطور البرمجي الحديث.</p>
+        <div class="btn-group" style="justify-content:center;margin-top:24px">
+            <a href="https://wa.me/212646867115" target="_blank" class="btn btn-primary" id="dev-contact-link">
+                <i class="fa-brands fa-whatsapp"></i> تواصل عبر واتساب
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- OWNER PANEL -->
+<section id="owner-section" style="padding:20px 20px 80px">
+    <div class="owner-panel-wrapper" id="owner-panel-wrapper">
+        <div class="owner-panel">
+            <div class="owner-panel-header">
+                <h2><i class="fa-solid fa-shield-halved" style="color:var(--cyan)"></i> لوحة تحكم المالك الشاملة 👑</h2>
+                <button class="panel-close" onclick="closeOwnerPanel()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="panel-tabs">
+                <button class="panel-tab active" onclick="switchTab('general',this)"><i class="fa-solid fa-sliders"></i> إعدادات عامة</button>
+                <button class="panel-tab" onclick="switchTab('links',this)"><i class="fa-solid fa-link"></i> الروابط</button>
+                <button class="panel-tab" onclick="switchTab('security',this)"><i class="fa-solid fa-lock"></i> الأمان</button>
+            </div>
+            <!-- General -->
+            <div class="tab-content active" id="tab-general">
+                <div class="field-group">
+                    <label><i class="fa-solid fa-robot"></i> اسم البوت</label>
+                    <input type="text" class="owner-input" id="input-bot-name" placeholder="مثال: OSKA-BOT">
+                </div>
+                <div class="field-group">
+                    <label><i class="fa-solid fa-align-right"></i> وصف البوت</label>
+                    <textarea class="owner-input" id="input-bot-desc"></textarea>
+                </div>
+                <div class="owner-grid-2">
+                    <div class="field-group">
+                        <label><i class="fa-solid fa-image"></i> رابط صورة البوت</label>
+                        <input type="text" class="owner-input" id="input-bot-img" placeholder="https://...">
+                    </div>
+                    <div class="field-group">
+                        <label><i class="fa-solid fa-video"></i> رابط الفيديو التعريفي (.mp4)</label>
+                        <input type="text" class="owner-input" id="input-video-url" placeholder="https://... رابط .mp4">
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label><i class="fa-brands fa-whatsapp"></i> رقم هاتف المطور</label>
+                    <input type="text" class="owner-input" id="input-bot-phone" placeholder="+212646867115">
+                </div>
+                <button class="save-btn" onclick="saveOwnerChanges()"><i class="fa-solid fa-floppy-disk"></i> حفظ الإعدادات</button>
+            </div>
+            <!-- Links -->
+            <div class="tab-content" id="tab-links">
+                <div class="owner-grid-2">
+                    <div class="field-group">
+                        <label><i class="fa-brands fa-github"></i> رابط كود المصدر</label>
+                        <input type="text" class="owner-input" id="input-git-link" placeholder="https://github.com/...">
+                    </div>
+                    <div class="field-group">
+                        <label><i class="fa-brands fa-whatsapp"></i> رابط القناة الرسمية</label>
+                        <input type="text" class="owner-input" id="input-chan-link" placeholder="https://wa.me/...">
+                    </div>
+                    <div class="field-group">
+                        <label><i class="fa-solid fa-key"></i> رابط توليد الجلسة</label>
+                        <input type="text" class="owner-input" id="input-session-url" placeholder="https://...">
+                    </div>
+                    <div class="field-group">
+                        <label><i class="fa-solid fa-server"></i> رابط التنصيب</label>
+                        <input type="text" class="owner-input" id="input-deploy-url" placeholder="https://koyeb.com/...">
+                    </div>
+                </div>
+                <button class="save-btn" onclick="saveOwnerChanges()"><i class="fa-solid fa-floppy-disk"></i> حفظ الروابط</button>
+            </div>
+            <!-- Security -->
+            <div class="tab-content" id="tab-security">
+                <div class="security-info">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <p>لتغيير كلمة مرور لوحة التحكم، أدخل كلمة المرور الحالية للتأكيد ثم أدخل الكلمة الجديدة.</p>
+                </div>
+                <div class="owner-grid-2">
+                    <div class="field-group">
+                        <label><i class="fa-solid fa-lock"></i> كلمة المرور الحالية</label>
+                        <div class="password-input-wrap">
+                            <input type="password" class="owner-input" id="current-pass" placeholder="أدخل كلمة المرور الحالية">
+                            <button class="toggle-eye" onclick="toggleEye('current-pass',this)"><i class="fa-solid fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label><i class="fa-solid fa-lock-open"></i> كلمة المرور الجديدة</label>
+                        <div class="password-input-wrap">
+                            <input type="password" class="owner-input" id="new-pass" placeholder="اتركها فارغة إذا لا تريد التغيير">
+                            <button class="toggle-eye" onclick="toggleEye('new-pass',this)"><i class="fa-solid fa-eye"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <button class="save-btn" onclick="saveOwnerChanges()" style="background:linear-gradient(45deg,#ff4d6d,#c9184a)">
+                    <i class="fa-solid fa-shield-halved"></i> تحديث كلمة المرور
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- AI CHAT -->
+<div class="ai-chat-trigger" onclick="toggleAIChat()"><i class="fa-solid fa-robot"></i></div>
+<div class="ai-chat-widget" id="ai-chat-widget">
+    <div class="ai-chat-header">
+        <span>🤖 مساعد OSKA-BOT الذكي</span>
+        <button onclick="toggleAIChat()" style="background:none;border:none;color:#000;cursor:pointer;font-size:17px"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="ai-chat-messages" id="ai-chat-messages">
+        <div class="message bot">مرحباً! أنا مساعد OSKA-BOT. كيف يمكنني مساعدتك في التنصيب أو الإعداد؟ ⚡</div>
+    </div>
+    <div class="ai-chat-input-area">
+        <input type="text" class="ai-chat-input" id="ai-chat-input" placeholder="اسألني أي شيء..." onkeydown="if(event.key==='Enter')sendAIMessage()">
+        <button class="ai-chat-send" onclick="sendAIMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<!-- MUSIC -->
+<div class="music-widget">
+    <audio id="bg-audio" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+    <button class="music-btn" id="play-pause-btn" onclick="toggleMusic()"><i class="fa-solid fa-play"></i></button>
+    <div class="music-info">
+        <span class="music-title">🎵 OSKA-BOT Beats</span>
+        <span style="opacity:.6;font-size:10px">موسيقى هادئة</span>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div style="font-size:22px;font-weight:900;color:var(--white);margin-bottom:12px" id="footer-logo">⚡ 𝛩𝑺𝐾𝐴-𝐵𝛩𝑇 ⚡</div>
+    <p style="margin-bottom:6px">صُنع بكل حب وذكاء برمجي بواسطة المطور المعتمد <strong style="color:var(--cyan)">𝐴𝑌𝑂𝑈𝐵</strong> 👑</p>
+    <p style="font-size:13px;opacity:.5">© 2026 𝛩𝑺𝐾𝐴-𝐵𝛩𝑇 | جميع الحقوق محفوظة</p>
+</footer>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+AOS.init({ once: true });
+let ownerPassword = "121212";
+
+/* PARTICLES */
+const canvas = document.getElementById('particles-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
+window.addEventListener('resize',resizeCanvas);resizeCanvas();
+class Particle{
+    constructor(){this.reset()}
+    reset(){this.x=Math.random()*canvas.width;this.y=Math.random()*canvas.height;
+        this.size=Math.random()*3+.5;this.sx=Math.random()*.4-.2;this.sy=-(Math.random()*.6+.2);
+        this.color=Math.random()>.5?'rgba(0,242,254,.35)':'rgba(79,172,254,.2)'}
+    update(){this.x+=this.sx;this.y+=this.sy;if(this.y<0||this.x<0||this.x>canvas.width)this.reset()}
+    draw(){ctx.fillStyle=this.color;ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fill()}
+}
+for(let i=0;i<45;i++)particles.push(new Particle());
+(function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{p.update();p.draw()});requestAnimationFrame(animate)})();
+
+/* MOBILE NAV */
+function toggleMobileNav(){
+    document.getElementById('mobile-nav').classList.toggle('open');
+    document.getElementById('hamburger').classList.toggle('open');
+}
+function closeMobileNav(){
+    document.getElementById('mobile-nav').classList.remove('open');
+    document.getElementById('hamburger').classList.remove('open');
+}
+
+/* MODAL */
+function openOwnerModal(e){if(e)e.preventDefault();
+    document.getElementById('owner-modal').classList.add('show');
+    document.getElementById('modal-pass-input').value='';
+    document.getElementById('modal-error').style.display='none';
+    setTimeout(()=>document.getElementById('modal-pass-input').focus(),100);
+}
+function closeOwnerModal(){document.getElementById('owner-modal').classList.remove('show')}
+function toggleModalEye(){
+    const inp=document.getElementById('modal-pass-input');
+    const icon=document.getElementById('modal-eye-btn').querySelector('i');
+    inp.type=inp.type==='password'?'text':'password';
+    icon.className=inp.type==='password'?'fa-solid fa-eye':'fa-solid fa-eye-slash';
+}
+function verifyOwner(){
+    const val=document.getElementById('modal-pass-input').value;
+    if(val===ownerPassword){closeOwnerModal();openOwnerPanel();}
+    else{document.getElementById('modal-error').style.display='block';
+         document.getElementById('modal-pass-input').value='';
+         document.getElementById('modal-pass-input').focus();}
+}
+document.getElementById('owner-modal').addEventListener('click',function(e){if(e.target===this)closeOwnerModal()});
+
+/* OWNER PANEL */
+function openOwnerPanel(){
+    document.getElementById('owner-panel-wrapper').classList.add('active');
+    document.getElementById('input-bot-name').value=document.getElementById('bot-title').innerText;
+    document.getElementById('input-bot-desc').value=document.getElementById('bot-desc').innerText;
+    document.getElementById('input-bot-img').value=document.getElementById('hero-image').src;
+    document.getElementById('input-bot-phone').value='+212646867115';
+    document.getElementById('input-git-link').value=document.getElementById('btn-github-link').href;
+    document.getElementById('input-chan-link').value=document.getElementById('btn-wa-link').href;
+    document.getElementById('input-session-url').value=document.getElementById('session-btn-link').href;
+    document.getElementById('input-deploy-url').value=document.getElementById('deploy-btn-link').href;
+    document.getElementById('owner-section').scrollIntoView({behavior:'smooth'});
+}
+function closeOwnerPanel(){document.getElementById('owner-panel-wrapper').classList.remove('active')}
+
+/* TABS */
+function switchTab(id,btn){
+    document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.panel-tab').forEach(t=>t.classList.remove('active'));
+    document.getElementById('tab-'+id).classList.add('active');
+    btn.classList.add('active');
+}
+
+/* SAVE */
+function saveOwnerChanges(){
+    const isSecurity=document.getElementById('tab-security').classList.contains('active');
+    if(isSecurity){
+        const cur=document.getElementById('current-pass').value;
+        const nw=document.getElementById('new-pass').value;
+        if(cur!==ownerPassword){showToast('❌ كلمة المرور الحالية غير صحيحة!','error');return}
+        if(nw.trim()){ownerPassword=nw;showToast('✅ تم تحديث كلمة المرور بنجاح!','success')}
+        else{showToast('ℹ️ لم تُدخل كلمة مرور جديدة','info')}
+        document.getElementById('current-pass').value='';document.getElementById('new-pass').value='';return;
+    }
+    const name=document.getElementById('input-bot-name').value.trim();
+    const desc=document.getElementById('input-bot-desc').value.trim();
+    const img=document.getElementById('input-bot-img').value.trim();
+    const phone=document.getElementById('input-bot-phone').value.trim();
+    const git=document.getElementById('input-git-link').value.trim();
+    const chan=document.getElementById('input-chan-link').value.trim();
+    const sess=document.getElementById('input-session-url').value.trim();
+    const dep=document.getElementById('input-deploy-url').value.trim();
+    const vid=document.getElementById('input-video-url').value.trim();
+    if(name){document.getElementById('bot-title').innerText=name;
+             document.getElementById('main-logo').querySelector('span').innerText='⚡ '+name;
+             document.getElementById('footer-logo').innerText='⚡ '+name+' ⚡';}
+    if(desc)document.getElementById('bot-desc').innerText=desc;
+    if(img)document.getElementById('hero-image').src=img;
+    if(git){document.getElementById('btn-github-link').href=git;document.getElementById('install-github-link').href=git;}
+    if(chan)document.getElementById('btn-wa-link').href=chan;
+    if(phone)document.getElementById('dev-contact-link').href='https://wa.me/'+phone.replace('+','');
+    if(sess){document.getElementById('session-btn-link').href=sess;document.getElementById('session-btn-link2').href=sess;}
+    if(dep){document.getElementById('deploy-btn-link').href=dep;document.getElementById('deploy-btn-link2').href=dep;}
+    if(vid){
+        const v=document.getElementById('hero-video');
+        const p=document.getElementById('video-placeholder');
+        v.src=vid;v.style.display='block';p.style.display='none';
+    }
+    showToast('✅ تم حفظ كافة الإعدادات بنجاح!','success');
+}
+
+/* TOAST */
+function showToast(msg,type){
+    const t=document.createElement('div');
+    t.style.cssText='position:fixed;bottom:110px;left:50%;transform:translateX(-50%);padding:13px 24px;border-radius:12px;font-size:14px;font-family:Tajawal,sans-serif;z-index:9999;backdrop-filter:blur(10px)';
+    t.style.background=type==='error'?'rgba(255,77,109,.9)':type==='info'?'rgba(79,172,254,.9)':'rgba(0,242,254,.9)';
+    t.style.color='#000';t.style.fontWeight='700';t.innerText=msg;
+    document.body.appendChild(t);setTimeout(()=>t.remove(),3000);
+}
+
+/* EYE TOGGLE */
+function toggleEye(id,btn){
+    const inp=document.getElementById(id);
+    const icon=btn.querySelector('i');
+    inp.type=inp.type==='password'?'text':'password';
+    icon.className=inp.type==='password'?'fa-solid fa-eye':'fa-solid fa-eye-slash';
+}
+
+/* AI CHAT */
+function toggleAIChat(){
+    const c=document.getElementById('ai-chat-widget');
+    c.style.display=c.style.display==='flex'?'none':'flex';
+}
+function sendAIMessage(){
+    const inp=document.getElementById('ai-chat-input');
+    const box=document.getElementById('ai-chat-messages');
+    const text=inp.value.trim();if(!text)return;
+    box.innerHTML+=`<div class="message user">${text}</div>`;inp.value='';box.scrollTop=box.scrollHeight;
+    setTimeout(()=>{
+        const q=text.toLowerCase();
+        let r="أنا مساعد OSKA-BOT. لتنصيب البوت راجع قسم 'طريقة التنصيب' أعلى الصفحة للتفاصيل الكاملة!";
+        if(q.includes('session')||q.includes('جلسة'))r="للحصول على Session ID: اضغط 'احصل على الجلسة' في قسم التنصيب → أدخل رقم الواتساب → امسح QR Code → انسخ الكود.";
+        else if(q.includes('koyeb')||q.includes('deploy')||q.includes('رفع'))r="للرفع على Koyeb: أنشئ حساباً مجانياً → ابدأ مشروعاً من GitHub → أضف SESSION_ID في متغيرات البيئة → انشر!";
+        else if(q.includes('مطور')||q.includes('مساعدة'))r="تواصل مع المطور AYOUB عبر زر 'تواصل عبر واتساب' في قسم المطور.";
+        else if(q.includes('مرحبا')||q.includes('سلام'))r="أهلاً بك يا بطل! كيف أخدمك اليوم في عالم OSKA-BOT؟ ⚡";
+        box.innerHTML+=`<div class="message bot">${r}</div>`;box.scrollTop=box.scrollHeight;
+    },700);
+}
+
+/* MUSIC */
+const audio=document.getElementById('bg-audio');
+function toggleMusic(){
+    const btn=document.getElementById('play-pause-btn').querySelector('i');
+    if(audio.paused){audio.play();btn.className='fa-solid fa-pause';}
+    else{audio.pause();btn.className='fa-solid fa-play';}
+}
+
+/* ACTIVE NAV */
+window.addEventListener('scroll',()=>{
+    const ids=['home','install','deploy','features','developer'];
+    let cur='';
+    ids.forEach(id=>{const el=document.getElementById(id);if(el&&window.scrollY>=el.offsetTop-120)cur=id});
+    document.querySelectorAll('.nav-links a').forEach(a=>{
+        a.classList.remove('active');
+        if(a.getAttribute('href')==='#'+cur)a.classList.add('active');
+    });
+});
+</script>
+</body>
+</html>
